@@ -3,6 +3,8 @@ package spreadsheet;
 import common.api.CellLocation;
 import common.api.EvaluationContext;
 import common.api.Expression;
+
+import java.util.Collections;
 import java.util.Set;
 
 public class Numbers implements Expression {
@@ -25,5 +27,10 @@ public class Numbers implements Expression {
 
   @Override
   public void findCellReferences(Set<CellLocation> dependencies) {
+  }
+
+  @Override
+  public Set<CellLocation> getCellReferences() {
+    return Collections.emptySet();
   }
 }

@@ -3,6 +3,8 @@ package spreadsheet;
 import common.api.CellLocation;
 import common.api.EvaluationContext;
 import common.api.Expression;
+
+import java.util.HashSet;
 import java.util.Set;
 
 public class BinApp implements Expression {
@@ -42,5 +44,13 @@ public class BinApp implements Expression {
   public void findCellReferences(Set<CellLocation> dependencies) {
     e1.findCellReferences(dependencies);
     e2.findCellReferences(dependencies);
+  }
+
+  @Override
+  public Set<CellLocation> getCellReferences() {
+    Set<CellLocation> cellReferences = new HashSet<>();
+    cellReferences.addAll(e1.getCellReferences());
+    cellReferences.addAll(e2.getCellReferences());
+    return cellReferences;
   }
 }

@@ -1,5 +1,7 @@
 package common.api;
 
+import spreadsheet.Cell;
+
 import java.util.Set;
 
 /**
@@ -21,4 +23,5 @@ public interface Expression {
    * <p>The cell locations should be added to the `dependencies` set.
    */
   void findCellReferences(Set<CellLocation> dependencies);
+  Set<CellLocation> getCellReferences();
 }

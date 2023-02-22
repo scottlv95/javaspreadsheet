@@ -13,8 +13,10 @@ public class Spreadsheet implements BasicSpreadsheet {
   // start replacing
   //
 
+  private Map<CellLocation, Cell> state;
+
   public Spreadsheet() {
-    this.state = new HashMap<CellLocation, Cell>();
+    this.state = new HashMap<>();
   }
 
   /**
@@ -23,7 +25,6 @@ public class Spreadsheet implements BasicSpreadsheet {
    * <p>DO NOT CHANGE THE SIGNATURE. The test suite depends on this.
    */
 
-  private Map<CellLocation, Cell> state;
 
   /**
    * Parse and evaluate an expression, using the spreadsheet as a context.
@@ -41,13 +42,21 @@ public class Spreadsheet implements BasicSpreadsheet {
    *
    * <p>DO NOT CHANGE THE SIGNATURE. The test suite depends on this.
    */
-  public void setCellExpression(CellLocation location, String input){
-
+  public void setCellExpression(CellLocation location, String input) throws InvalidSyntaxException {
+    if (!state.containsKey(location)) {
+      state.put(location, new Cell(this, location));
+    }
+    Cell c = state.get(location);
+    c.setExpression(input);
+    c.recalculate();
   }
 
   @Override
   public double getCellValue(CellLocation location) {
-    return state.getOrDefault(location, 0.0);
+    if (!state.containsKey(location)) {
+      state.put(location,new Cell(this,location));
+    }
+    return state.get(location).getValue();
   }
   //
   // end replacing
@@ -55,27 +64,38 @@ public class Spreadsheet implements BasicSpreadsheet {
 
   @Override
   public String getCellExpression(CellLocation location) {
+    if (!state.containsKey(location)) {
+      state.put(location,new Cell(this,location));
+    }
     return state.get(location).getExpression();
   }
 
   @Override
   public String getCellDisplay(CellLocation location) {
-    return Double.toString(this.getCellValue(location));
+    if (!state.containsKey(location)) {
+      state.put(location,new Cell(this,location));
+    }
+    if (state.get(location).getEmptyState()) {
+      return "";
+    }
+    else {
+      return Double.toString(getCellValue(location));
+    }
   }
 
   @Override
   public void addDependency(CellLocation dependent, CellLocation dependency) {
-    throw new UnsupportedOperationException("Not implemented yet");
+    state.get(dependency).addDependent(dependent);
   }
 
   @Override
   public void removeDependency(CellLocation dependent, CellLocation dependency) {
-    throw new UnsupportedOperationException("Not implemented yet");
+    state.get(dependency).removeDependent(dependent);
   }
 
   @Override
   public void recalculate(CellLocation location) {
-    throw new UnsupportedOperationException("Not implemented yet");
+    state.get(location).recalculate();
   }
 
   @Override

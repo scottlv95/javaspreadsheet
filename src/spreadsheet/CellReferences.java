@@ -27,6 +27,11 @@ public class CellReferences implements Expression {
   public void findCellReferences(Set<CellLocation> dependencies) {
     dependencies.add(cellLocation);
   }
+
+  @Override
+  public Set<CellLocation> getCellReferences() {
+    return Set.of(cellLocation);
+  }
 }
 
 

@@ -4,6 +4,7 @@ import common.api.BasicSpreadsheet;
 import common.api.CellLocation;
 import common.api.Expression;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -19,17 +20,20 @@ public class Cell {
    * @param location The location of this cell in the spreadsheet.
    */
   private BasicSpreadsheet spreadsheet;
-  private CellLocation location;
-  private boolean isEmpty;
+  private final CellLocation location;
+  private boolean emptyState;
   private double value;
   private Expression expression;
+  private Set<CellLocation> dependents;
+  private Set<CellLocation> dependencies;
+
 
 
   Cell(BasicSpreadsheet spreadsheet, CellLocation location) {
     this.spreadsheet = spreadsheet;
     this.location = location;
-    this.isEmpty = true;
-    this.value = 0.0;
+    setEmpty();
+    dependents = new HashSet<>();
   }
 
   /**
@@ -52,6 +56,9 @@ public class Cell {
    *     expression is stored, we return the empty string.
    */
   public String getExpression() {
+    if (emptyState) {
+      return "";
+    }
     return expression.toString();
   }
 
@@ -64,14 +71,24 @@ public class Cell {
    * @throws InvalidSyntaxException if the string cannot be parsed.
    */
   public void setExpression(String input) throws InvalidSyntaxException {
-    expression = Parser.parse(input);
-    isEmpty = false;
+    dependencies.forEach(ref -> spreadsheet.removeDependency( location,ref));
+
+    if (input.isEmpty()) {
+      emptyState = true;
+      setEmpty();
+    }
+    else {
+      expression = Parser.parse(input);
+      emptyState = false;
+      dependencies = expression.getCellReferences();
+      dependencies.forEach(ref->spreadsheet.addDependency(location,ref));
+    }
   }
 
   /** @return a string representing the value, if any, of this cell. */
   @Override
   public String toString() {
-    if (isEmpty) {
+    if (emptyState) {
       return "";
     }
     return Double.toString(value);
@@ -85,7 +102,7 @@ public class Cell {
    * @param location the location to add.
    */
   public void addDependent(CellLocation location) {
-    throw new UnsupportedOperationException("Not implemented yet");
+    dependents.add(location);
   }
 
   /**
@@ -96,7 +113,7 @@ public class Cell {
    * @param location the location to add.
    */
   public void removeDependent(CellLocation location) {
-    throw new UnsupportedOperationException("Not implemented yet");
+    dependents.remove(location);
   }
 
   /**
@@ -116,8 +133,27 @@ public class Cell {
    * <p>DO NOT CHANGE THE SIGNATURE. The test suite depends on this.
    */
   public void recalculate() {
-    if (!isEmpty) {
+    if (!emptyState) {
       value = expression.evaluate(spreadsheet);
+      if (!dependents.isEmpty()) {
+        dependents.forEach(dep -> spreadsheet.recalculate(dep));
+      }
+    }
+    else {
+      value = 0.0;
+      dependents.forEach(dep -> spreadsheet.recalculate(dep));
     }
   }
+
+  public boolean getEmptyState() {
+    return emptyState;
+  }
+
+  public void setEmpty() {
+    emptyState = true;
+    expression = null;
+    value = 0.0;
+    dependencies = new HashSet<>();
+  }
+
 }
