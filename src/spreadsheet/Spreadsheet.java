@@ -14,7 +14,7 @@ public class Spreadsheet implements BasicSpreadsheet {
   //
 
   public Spreadsheet() {
-    this.state = new HashMap<CellLocation, Double>();
+    this.state = new HashMap<CellLocation, Cell>();
   }
 
   /**
@@ -23,7 +23,7 @@ public class Spreadsheet implements BasicSpreadsheet {
    * <p>DO NOT CHANGE THE SIGNATURE. The test suite depends on this.
    */
 
-  private Map<CellLocation, Double> state;
+  private Map<CellLocation, Cell> state;
 
   /**
    * Parse and evaluate an expression, using the spreadsheet as a context.
@@ -41,9 +41,8 @@ public class Spreadsheet implements BasicSpreadsheet {
    *
    * <p>DO NOT CHANGE THE SIGNATURE. The test suite depends on this.
    */
-  public void setCellExpression(CellLocation location, String input)
-      throws InvalidSyntaxException {
-    state.put(location, evaluateExpression(input));
+  public void setCellExpression(CellLocation location, String input){
+
   }
 
   @Override
@@ -56,7 +55,7 @@ public class Spreadsheet implements BasicSpreadsheet {
 
   @Override
   public String getCellExpression(CellLocation location) {
-    return "";
+    return state.get(location).getExpression();
   }
 
   @Override

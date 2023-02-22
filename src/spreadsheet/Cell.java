@@ -2,6 +2,8 @@ package spreadsheet;
 
 import common.api.BasicSpreadsheet;
 import common.api.CellLocation;
+import common.api.Expression;
+
 import java.util.Set;
 
 /**
@@ -16,7 +18,19 @@ public class Cell {
    * @param spreadsheet The parent spreadsheet,
    * @param location The location of this cell in the spreadsheet.
    */
-  Cell(BasicSpreadsheet spreadsheet, CellLocation location) {}
+  private BasicSpreadsheet spreadsheet;
+  private CellLocation location;
+  private boolean isEmpty;
+  private double value;
+  private Expression expression;
+
+
+  Cell(BasicSpreadsheet spreadsheet, CellLocation location) {
+    this.spreadsheet = spreadsheet;
+    this.location = location;
+    this.isEmpty = true;
+    this.value = 0.0;
+  }
 
   /**
    * Gets the cell's last calculated value.
@@ -26,7 +40,7 @@ public class Cell {
    * @return the cell's value.
    */
   public double getValue() {
-    throw new UnsupportedOperationException("Not implemented yet");
+    return value;
   }
 
   /**
@@ -38,7 +52,7 @@ public class Cell {
    *     expression is stored, we return the empty string.
    */
   public String getExpression() {
-    throw new UnsupportedOperationException("Not implemented yet");
+    return expression.toString();
   }
 
   /**
@@ -50,13 +64,17 @@ public class Cell {
    * @throws InvalidSyntaxException if the string cannot be parsed.
    */
   public void setExpression(String input) throws InvalidSyntaxException {
-    throw new UnsupportedOperationException("Not implemented yet");
+    expression = Parser.parse(input);
+    isEmpty = false;
   }
 
   /** @return a string representing the value, if any, of this cell. */
   @Override
   public String toString() {
-    throw new UnsupportedOperationException("Not implemented yet");
+    if (isEmpty) {
+      return "";
+    }
+    return Double.toString(value);
   }
 
   /**
@@ -98,6 +116,8 @@ public class Cell {
    * <p>DO NOT CHANGE THE SIGNATURE. The test suite depends on this.
    */
   public void recalculate() {
-    throw new UnsupportedOperationException("Not implemented yet");
+    if (!isEmpty) {
+      value = expression.evaluate(spreadsheet);
+    }
   }
 }
