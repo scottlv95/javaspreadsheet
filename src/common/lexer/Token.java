@@ -86,17 +86,28 @@ public class Token {
   }
 
   public enum Kind {
-    PLUS,
-    MINUS,
-    STAR,
-    SLASH,
-    CARET,
-    LPARENTHESIS,
-    RPARENTHESIS,
-    LANGLE,
-    RANGLE,
-    EQUALS,
-    NUMBER,
-    CELL_LOCATION,
+    PLUS("+"),
+    MINUS("-"),
+    STAR("*"),
+    SLASH("/"),
+    CARET("^"),
+    LPARENTHESIS("("),
+    RPARENTHESIS(")"),
+    LANGLE("<"),
+    RANGLE(">"),
+    EQUALS(),
+    NUMBER(),
+    CELL_LOCATION(),
+    ;
+
+    private String symbol;
+    Kind(String symbol) {
+      this.symbol = symbol;
+    }
+    Kind(){this.symbol = "";}
+
+    public String getSymbol() {
+      return symbol;
+    }
   }
 }

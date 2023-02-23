@@ -5,7 +5,7 @@ import common.lexer.Token.Kind;
 public class BinOp {
 
 
-  private Kind kind;
+  private final Kind kind;
 
 
   public BinOp(Kind kind) {
@@ -39,16 +39,7 @@ public class BinOp {
 
   @Override
   public String toString() {
-    String out;
-    switch (this.kind) {
-      case MINUS -> out = "-";
-      case PLUS -> out = "+";
-      case STAR -> out = "*";
-      case SLASH -> out = "/";
-      case CARET -> out = "^";
-      default -> out = this.toString();
-    }
-    return out;
+    return this.kind.getSymbol();
   }
 
   enum Associativity {

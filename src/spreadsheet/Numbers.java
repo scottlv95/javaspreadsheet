@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class Numbers implements Expression {
 
-  private double value;
+  private final double value;
 
   public Numbers(double value) {
     this.value = value;
