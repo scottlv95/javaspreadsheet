@@ -124,7 +124,9 @@ public class Cell {
    * @param target The set that will receive the dependencies for this
    */
   public void findCellReferences(Set<CellLocation> target) {
-    throw new UnsupportedOperationException("Not implemented yet");
+    if (!emptyState) {
+      target.addAll(expression.getCellReferences());
+    }
   }
 
   /**

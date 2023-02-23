@@ -3,6 +3,8 @@ package spreadsheet;
 import common.api.BasicSpreadsheet;
 import common.api.CellLocation;
 
+import java.util.*;
+
 /** Detects dependency cycles. */
 public class CycleDetector {
   /**
@@ -12,7 +14,11 @@ public class CycleDetector {
    *
    * @param spreadsheet The parent spreadsheet, used for resolving cell locations.
    */
-  CycleDetector(BasicSpreadsheet spreadsheet) {}
+  private BasicSpreadsheet spreadsheet;
+  private Set<CellLocation> seen = new HashSet<>();
+  CycleDetector(BasicSpreadsheet spreadsheet) {
+    this.spreadsheet = spreadsheet;
+  }
 
   /**
    * Checks for a cycle in the spreadsheet, starting at a particular cell.
@@ -23,6 +29,19 @@ public class CycleDetector {
    * @return Whether a cycle was detected in the dependency graph starting at the given cell.
    */
   public boolean hasCycleFrom(CellLocation start) {
-    throw new UnsupportedOperationException("Not implemented yet");
+    if (seen.contains(start)) {
+      return true;
+    }
+    Set<CellLocation> dependencies = new HashSet<>();
+    spreadsheet.findCellReferences(start,dependencies);
+    seen.add(start);
+    for (CellLocation dep : dependencies){
+      if (hasCycleFrom(dep)) {
+        return true;
+      };
+    }
+    seen.remove(start);
+    return false;
   }
+
 }

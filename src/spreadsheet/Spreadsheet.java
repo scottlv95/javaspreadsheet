@@ -14,6 +14,7 @@ public class Spreadsheet implements BasicSpreadsheet {
   //
 
   private Map<CellLocation, Cell> state;
+  private CycleDetector cycleDetector = new CycleDetector(this);
 
   public Spreadsheet() {
     this.state = new HashMap<>();
@@ -43,11 +44,15 @@ public class Spreadsheet implements BasicSpreadsheet {
    * <p>DO NOT CHANGE THE SIGNATURE. The test suite depends on this.
    */
   public void setCellExpression(CellLocation location, String input) throws InvalidSyntaxException {
+    String original = getCellExpression(location);
     if (!state.containsKey(location)) {
       state.put(location, new Cell(this, location));
     }
     Cell c = state.get(location);
     c.setExpression(input);
+    if (cycleDetector.hasCycleFrom(location)) {
+      c.setExpression(original);
+    };
     c.recalculate();
   }
 
@@ -85,11 +90,17 @@ public class Spreadsheet implements BasicSpreadsheet {
 
   @Override
   public void addDependency(CellLocation dependent, CellLocation dependency) {
+    if (!state.containsKey(dependency)) {
+      state.put(dependency,new Cell(this,dependency));
+    }
     state.get(dependency).addDependent(dependent);
   }
 
   @Override
   public void removeDependency(CellLocation dependent, CellLocation dependency) {
+    if (!state.containsKey(dependency)) {
+      state.put(dependency,new Cell(this,dependency));
+    }
     state.get(dependency).removeDependent(dependent);
   }
 
@@ -100,6 +111,7 @@ public class Spreadsheet implements BasicSpreadsheet {
 
   @Override
   public void findCellReferences(CellLocation subject, Set<CellLocation> target) {
-    throw new UnsupportedOperationException("Not implemented yet");
+    state.get(subject).findCellReferences(target);
   }
+
 }
