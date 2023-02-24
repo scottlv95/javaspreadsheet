@@ -60,6 +60,20 @@ public class Parser {
             operators.push(op);
           }
         }
+        case LPARENTHESIS -> {
+          operators.push(new BinOp(Token.Kind.LPARENTHESIS));
+        }
+        case RPARENTHESIS -> {
+          while (operators.peek().getKind() != Token.Kind.LPARENTHESIS) {
+            Expression e2 = operands.pop();
+            Expression e1 = operands.pop();
+            operands.push(new BinApp(operators.pop(), e1, e2));
+          }
+          Expression e3 = operands.pop();
+          operators.pop();
+          operands.push(new Parentheses(e3));
+        }
+
         default -> throw new InvalidSyntaxException("Invalid Syntax");
       }
 

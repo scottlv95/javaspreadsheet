@@ -16,22 +16,15 @@ public class BinOp {
     return kind;
   }
 
-  public int getPrecedence() throws InvalidSyntaxException {
-    int precedence;
-    switch (kind) {
-      case PLUS, MINUS -> precedence = 1;
-      case STAR, SLASH -> precedence = 2;
-      case CARET -> precedence = 3;
-      default -> throw new InvalidSyntaxException("Invalid Syntax");
-    }
-    return precedence;
+  public int getPrecedence() {
+    return this.kind.getPrecedence();
   }
 
   public Associativity getAssociativity() throws InvalidSyntaxException {
     Associativity a;
     switch (kind) {
-      case PLUS, MINUS, STAR, SLASH -> a = Associativity.LEFT;
-      case CARET -> a = Associativity.RIGHT;
+      case PLUS, MINUS, STAR, SLASH, RPARENTHESIS -> a = Associativity.LEFT;
+      case CARET, LPARENTHESIS -> a = Associativity.RIGHT;
       default -> throw new InvalidSyntaxException("Invalid Syntax");
     }
     return a;

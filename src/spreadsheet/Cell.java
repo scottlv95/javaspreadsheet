@@ -3,7 +3,6 @@ package spreadsheet;
 import common.api.BasicSpreadsheet;
 import common.api.CellLocation;
 import common.api.Expression;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,7 +25,6 @@ public class Cell {
   private Expression expression;
   private Set<CellLocation> dependents;
   private Set<CellLocation> dependencies;
-
 
 
   Cell(BasicSpreadsheet spreadsheet, CellLocation location) {
@@ -53,7 +51,7 @@ public class Cell {
    * <p>DO NOT CHANGE THE SIGNATURE. The test suite depends on this.
    *
    * @return a string that parses to an equivalent expression to that last stored in the cell; if no
-   *     expression is stored, we return the empty string.
+   * expression is stored, we return the empty string.
    */
   public String getExpression() {
     if (emptyState) {
@@ -71,21 +69,22 @@ public class Cell {
    * @throws InvalidSyntaxException if the string cannot be parsed.
    */
   public void setExpression(String input) throws InvalidSyntaxException {
-    dependencies.forEach(ref -> spreadsheet.removeDependency( location,ref));
+    dependencies.forEach(ref -> spreadsheet.removeDependency(location, ref));
 
     if (input.isEmpty()) {
       emptyState = true;
       setEmpty();
-    }
-    else {
+    } else {
       expression = Parser.parse(input);
       emptyState = false;
       dependencies = expression.getCellReferences();
-      dependencies.forEach(ref->spreadsheet.addDependency(location,ref));
+      dependencies.forEach(ref -> spreadsheet.addDependency(location, ref));
     }
   }
 
-  /** @return a string representing the value, if any, of this cell. */
+  /**
+   * @return a string representing the value, if any, of this cell.
+   */
   @Override
   public String toString() {
     if (emptyState) {
@@ -140,8 +139,7 @@ public class Cell {
       if (!dependents.isEmpty()) {
         dependents.forEach(dep -> spreadsheet.recalculate(dep));
       }
-    }
-    else {
+    } else {
       value = 0.0;
       dependents.forEach(dep -> spreadsheet.recalculate(dep));
     }

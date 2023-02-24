@@ -3,7 +3,6 @@ package spreadsheet;
 import common.api.BasicSpreadsheet;
 import common.api.CellLocation;
 import common.api.Expression;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -52,14 +51,15 @@ public class Spreadsheet implements BasicSpreadsheet {
     c.setExpression(input);
     if (cycleDetector.hasCycleFrom(location)) {
       c.setExpression(original);
-    };
+    }
+    ;
     c.recalculate();
   }
 
   @Override
   public double getCellValue(CellLocation location) {
     if (!state.containsKey(location)) {
-      state.put(location,new Cell(this,location));
+      state.put(location, new Cell(this, location));
     }
     return state.get(location).getValue();
   }
@@ -70,7 +70,7 @@ public class Spreadsheet implements BasicSpreadsheet {
   @Override
   public String getCellExpression(CellLocation location) {
     if (!state.containsKey(location)) {
-      state.put(location,new Cell(this,location));
+      state.put(location, new Cell(this, location));
     }
     return state.get(location).getExpression();
   }
@@ -78,12 +78,11 @@ public class Spreadsheet implements BasicSpreadsheet {
   @Override
   public String getCellDisplay(CellLocation location) {
     if (!state.containsKey(location)) {
-      state.put(location,new Cell(this,location));
+      state.put(location, new Cell(this, location));
     }
     if (state.get(location).getEmptyState()) {
       return "";
-    }
-    else {
+    } else {
       return Double.toString(getCellValue(location));
     }
   }
@@ -91,7 +90,7 @@ public class Spreadsheet implements BasicSpreadsheet {
   @Override
   public void addDependency(CellLocation dependent, CellLocation dependency) {
     if (!state.containsKey(dependency)) {
-      state.put(dependency,new Cell(this,dependency));
+      state.put(dependency, new Cell(this, dependency));
     }
     state.get(dependency).addDependent(dependent);
   }
@@ -99,7 +98,7 @@ public class Spreadsheet implements BasicSpreadsheet {
   @Override
   public void removeDependency(CellLocation dependent, CellLocation dependency) {
     if (!state.containsKey(dependency)) {
-      state.put(dependency,new Cell(this,dependency));
+      state.put(dependency, new Cell(this, dependency));
     }
     state.get(dependency).removeDependent(dependent);
   }

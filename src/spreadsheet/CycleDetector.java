@@ -2,10 +2,11 @@ package spreadsheet;
 
 import common.api.BasicSpreadsheet;
 import common.api.CellLocation;
-
 import java.util.*;
 
-/** Detects dependency cycles. */
+/**
+ * Detects dependency cycles.
+ */
 public class CycleDetector {
   /**
    * Constructs a new cycle detector.
@@ -16,6 +17,7 @@ public class CycleDetector {
    */
   private BasicSpreadsheet spreadsheet;
   private Set<CellLocation> seen = new HashSet<>();
+
   CycleDetector(BasicSpreadsheet spreadsheet) {
     this.spreadsheet = spreadsheet;
   }
@@ -33,12 +35,14 @@ public class CycleDetector {
       return true;
     }
     Set<CellLocation> dependencies = new HashSet<>();
-    spreadsheet.findCellReferences(start,dependencies);
+    spreadsheet.findCellReferences(start, dependencies);
     seen.add(start);
-    for (CellLocation dep : dependencies){
+    for (CellLocation dep : dependencies) {
       if (hasCycleFrom(dep)) {
+        seen.remove(start);
         return true;
-      };
+      }
+      ;
     }
     seen.remove(start);
     return false;

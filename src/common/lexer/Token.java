@@ -86,28 +86,40 @@ public class Token {
   }
 
   public enum Kind {
-    PLUS("+"),
-    MINUS("-"),
-    STAR("*"),
-    SLASH("/"),
-    CARET("^"),
-    LPARENTHESIS("("),
-    RPARENTHESIS(")"),
+    PLUS("+",1),
+    MINUS("-",1),
+    STAR("*",2),
+    SLASH("/",2),
+    CARET("^",3),
+    LPARENTHESIS("(",0),
+    RPARENTHESIS(")",4),
     LANGLE("<"),
     RANGLE(">"),
-    EQUALS(),
+    EQUALS("="),
     NUMBER(),
     CELL_LOCATION(),
     ;
 
     private String symbol;
-    Kind(String symbol) {
+    private int precedence;
+
+    Kind(String symbol,int precedence) {
       this.symbol = symbol;
+      this.precedence = precedence;
     }
-    Kind(){this.symbol = "";}
+    Kind(String symbol) {
+      this(symbol,1);
+    }
+    Kind(){
+      this("",1);
+    }
 
     public String getSymbol() {
       return symbol;
+    }
+
+    public int getPrecedence() {
+      return precedence;
     }
   }
 }
